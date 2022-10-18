@@ -22,7 +22,7 @@ module "asm" {
   cluster_location          = module.gke.location
   enable_cni                = true
   enable_fleet_registration = false
-  enable_mesh_feature       = true
+  enable_mesh_feature       = false
 }
 
 module "istio-annotation" {
