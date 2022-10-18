@@ -42,7 +42,7 @@ spec:
               - all
           privileged: false
           readOnlyRootFilesystem: true
-        image: gcr.io/bank-of-anthos-ci/contacts:v0.5.8
+        image: esraghu/contacts:v0.5.8
         volumeMounts:
         - name: publickey
           mountPath: "/tmp/.ssh"
