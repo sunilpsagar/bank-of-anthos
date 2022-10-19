@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-region       = "australia-southeast2"
-zone         = "australia-southeast2-b"
-cluster_name = "bank-of-anthos-cluster1"
+region       = "australia-southeast1"
+cluster_name = "bank-of-anthos-sydney1"
 sync_repo    = "https://github.com/esraghu/bank-of-anthos.git"
-sync_branch  = "main"
+sync_branch  = "syd1"
 sync_rev     = ""
 policy_dir   = "/kubernetes-manifests"

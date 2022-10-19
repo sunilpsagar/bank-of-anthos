@@ -20,9 +20,6 @@ module "gke" {
   project_id               = data.google_project.project.project_id
   name                     = var.cluster_name
   region                   = var.region
-  zones                    = [var.zone]
-  initial_node_count       = 1
-  remove_default_node_pool = true
   network                  = "default"
   subnetwork               = "default"
   ip_range_pods            = ""
@@ -32,17 +29,8 @@ module "gke" {
   }
   identity_namespace = "${data.google_project.project.project_id}.svc.id.goog"
 
-  node_pools = [
-    {
-      name         = "asd-node-pool"
-      autoscaling  = true
-      node_count   = 3
-      min_count    = 1
-      max_count    = 10
-      auto_upgrade = true
-      machine_type = "e2-standard-2"
-    },
-  ]
+  # Enabling Autopilot mode
+  enable_autopilot = true
 
   depends_on = [
     module.enabled_google_apis
