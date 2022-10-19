@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START gke_boa_kubernetes_manifests_transaction_history_deployment_transactionhistory]
+# [START gke_kubernetes_manifests_transaction_history_deployment_transactionhistory]
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,29 +26,15 @@ spec:
       labels:
         app: transactionhistory
     spec:
-      serviceAccountName: default
+      serviceAccountName: boa-ksa
       terminationGracePeriodSeconds: 5
-      securityContext:
-        fsGroup: 1000
-        runAsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
       containers:
       - name: transactionhistory
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-              - all
-          privileged: false
-          readOnlyRootFilesystem: true
         image: esraghu/transactionhistory:v0.5.8
         volumeMounts:
         - name: publickey
-          mountPath: "/tmp/.ssh"
+          mountPath: "/root/.ssh"
           readOnly: true
-        - mountPath: /tmp
-          name: tmp
         env:
         - name: VERSION
           value: "v0.5.8"
@@ -68,7 +54,7 @@ spec:
           value: "100"
           # tell Java to obey container memory limits
         - name: JVM_OPTS
-          value: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -Xms256m -Xmx512m"
+          value: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
         #- name: EXTRA_LATENCY_MILLIS
         #  value: "5000"
         # Valid levels are debug, info, warn, error, fatal.
@@ -88,10 +74,10 @@ spec:
         resources:
           requests:
             cpu: 100m
-            memory: 256Mi
+            memory: 512Mi
           limits:
             cpu: 500m
-            memory: 512Mi
+            memory: 1Gi
         readinessProbe:
           httpGet:
             path: /ready
@@ -106,12 +92,22 @@ spec:
           initialDelaySeconds: 120
           periodSeconds: 5
           timeoutSeconds: 10
-        startupProbe:
-          httpGet:
-            path: /healthy
-            port: 8080
-          failureThreshold: 30
-          periodSeconds: 10
+      - name: cloudsql-proxy
+        resources:
+          limits:
+            cpu: "200m"
+            memory: "100Mi"
+        image: esraghu/gce-proxy:1.30.0
+        env:
+        - name: CONNECTION_NAME
+          valueFrom:
+            secretKeyRef:
+              name: cloud-sql-admin
+              key: connectionName
+        command: ["/cloud_sql_proxy",
+                  "-instances=$(CONNECTION_NAME)=tcp:5432"]
+        securityContext:
+          runAsNonRoot: true
       volumes:
       - name: publickey
         secret:
@@ -119,11 +115,9 @@ spec:
           items:
           - key: jwtRS256.key.pub
             path: publickey
-      - emptyDir: {}
-        name: tmp
-# [END gke_boa_kubernetes_manifests_transaction_history_deployment_transactionhistory]
+# [END gke_kubernetes_manifests_transaction_history_deployment_transactionhistory]
 ---
-# [START gke_boa_kubernetes_manifests_transaction_history_service_transactionhistory]
+# [START gke_kubernetes_manifests_transaction_history_service_transactionhistory]
 apiVersion: v1
 kind: Service
 metadata:
@@ -136,4 +130,4 @@ spec:
   - name: http
     port: 8080
     targetPort: 8080
-# [END gke_boa_kubernetes_manifests_transaction_history_service_transactionhistory]
+# [END gke_kubernetes_manifests_transaction_history_service_transactionhistory]

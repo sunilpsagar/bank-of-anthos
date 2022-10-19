@@ -1,4 +1,4 @@
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START gke_boa_kubernetes_manifests_contacts_deployment_contacts]
+# [START gke_kubernetes_manifests_contacts_deployment_contacts]
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,29 +26,15 @@ spec:
       labels:
         app: contacts
     spec:
-      serviceAccountName: default
+      serviceAccountName: boa-ksa
       terminationGracePeriodSeconds: 5
-      securityContext:
-        fsGroup: 1000
-        runAsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
       containers:
       - name: contacts
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-              - all
-          privileged: false
-          readOnlyRootFilesystem: true
         image: esraghu/contacts:v0.5.8
         volumeMounts:
         - name: publickey
-          mountPath: "/tmp/.ssh"
+          mountPath: "/root/.ssh"
           readOnly: true
-        - mountPath: /tmp
-          name: tmp
         env:
         - name: VERSION
           value: "v0.5.8"
@@ -70,8 +56,8 @@ spec:
             cpu: 100m
             memory: 64Mi
           limits:
-            cpu: 250m
-            memory: 128Mi
+            cpu: 500m
+            memory: 256Mi
         readinessProbe:
           httpGet:
             path: /ready
@@ -79,6 +65,22 @@ spec:
           initialDelaySeconds: 10
           periodSeconds: 5
           timeoutSeconds: 10
+      - name: cloudsql-proxy
+        resources:
+          limits:
+            cpu: "200m"
+            memory: "100Mi"
+        image: esraghu/gce-proxy:1.30.0
+        env:
+        - name: CONNECTION_NAME
+          valueFrom:
+            secretKeyRef:
+              name: cloud-sql-admin
+              key: connectionName
+        command: ["/cloud_sql_proxy",
+                  "-instances=$(CONNECTION_NAME)=tcp:5432"]
+        securityContext:
+          runAsNonRoot: true
       volumes:
       - name: publickey
         secret:
@@ -86,11 +88,9 @@ spec:
           items:
           - key: jwtRS256.key.pub
             path: publickey
-      - emptyDir: {}
-        name: tmp
-# [END gke_boa_kubernetes_manifests_contacts_deployment_contacts]
+# [END gke_kubernetes_manifests_contacts_deployment_contacts]
 ---
-# [START gke_boa_kubernetes_manifests_contacts_service_contacts]
+# [START gke_kubernetes_manifests_contacts_service_contacts]
 apiVersion: v1
 kind: Service
 metadata:
@@ -103,4 +103,4 @@ spec:
   - name: http
     port: 8080
     targetPort: 8080
-# [END gke_boa_kubernetes_manifests_contacts_service_contacts]
+# [END gke_kubernetes_manifests_contacts_service_contacts]
