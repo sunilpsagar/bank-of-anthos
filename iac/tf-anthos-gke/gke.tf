@@ -17,7 +17,7 @@
 module "gke" {
   source                   = "terraform-google-modules/kubernetes-engine/google//modules/beta-autopilot-public-cluster"
   version                  = "~> 23.0"
-  project_id               = var.project_id
+  project_id               = data.google_project.project.project_id
   name                     = var.cluster_name
   regional                 = true
   region                   = var.region
