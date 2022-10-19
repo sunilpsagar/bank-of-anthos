@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START gke_boa_kubernetes_manifests_frontend_deployment_frontend]
+# [START gke_kubernetes_manifests_frontend_deployment_frontend]
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,29 +26,15 @@ spec:
       labels:
         app: frontend
     spec:
-      serviceAccountName: default
+      serviceAccountName: boa-ksa
       terminationGracePeriodSeconds: 5
-      securityContext:
-        fsGroup: 1000
-        runAsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
       containers:
       - name: front
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-              - all
-          privileged: false
-          readOnlyRootFilesystem: true
-        image: esraghu/frontend:v0.5.8
+        image: gcr.io/bank-of-anthos-ci/frontend:v0.5.8
         volumeMounts:
         - name: publickey
-          mountPath: "/tmp/.ssh"
+          mountPath: "/root/.ssh"
           readOnly: true
-        - mountPath: /tmp
-          name: tmp
         env:
         - name: VERSION
           value: "v0.5.8"
@@ -90,19 +76,19 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: oauth-config
-              key: DEMO_OAUTH_REDIRECT_URI
+              key: DEMO_OAUTH_REDIRECT_URI              
               optional: true
+        envFrom:
+        - configMapRef:
+            name: environment-config
+        - configMapRef:
+            name: service-api-config
         # Customize the metadata server hostname to query for metadata
         #- name: METADATA_SERVER
         #  value: "my-metadata-server"
         # Customize the pod zone if it cannot be retrieved from the metadata server
         #- name: POD_ZONE
         #  value: "my-zone"
-        envFrom:
-        - configMapRef:
-            name: environment-config
-        - configMapRef:
-            name: service-api-config
         readinessProbe:
           httpGet:
             path: /ready
@@ -122,8 +108,8 @@ spec:
             cpu: 100m
             memory: 64Mi
           limits:
-            cpu: 250m
-            memory: 128Mi
+            cpu: 500m
+            memory: 256Mi
       volumes:
       - name: publickey
         secret:
@@ -131,11 +117,9 @@ spec:
           items:
           - key: jwtRS256.key.pub
             path: publickey
-      - emptyDir: {}
-        name: tmp
-# [END gke_boa_kubernetes_manifests_frontend_deployment_frontend]
+# [END gke_kubernetes_manifests_frontend_deployment_frontend]
 ---
-# [START gke_boa_kubernetes_manifests_frontend_service_frontend]
+# [START gke_kubernetes_manifests_frontend_service_frontend]
 apiVersion: v1
 kind: Service
 metadata:
@@ -150,4 +134,4 @@ spec:
   - name: http
     port: 80
     targetPort: 8080
-# [END gke_boa_kubernetes_manifests_frontend_service_frontend]
+# [END gke_kubernetes_manifests_frontend_service_frontend]

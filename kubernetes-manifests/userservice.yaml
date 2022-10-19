@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START gke_boa_kubernetes_manifests_userservice_deployment_userservice]
+# [START gke_kubernetes_manifests_userservice_deployment_userservice]
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,29 +26,15 @@ spec:
       labels:
         app: userservice
     spec:
-      serviceAccountName: default
+      serviceAccountName: boa-ksa
       terminationGracePeriodSeconds: 5
-      securityContext:
-        fsGroup: 1000
-        runAsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
       containers:
       - name: userservice
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-              - all
-          privileged: false
-          readOnlyRootFilesystem: true
         image: esraghu/userservice:v0.5.8
         volumeMounts:
         - name: keys
-          mountPath: "/tmp/.ssh"
+          mountPath: "/root/.ssh"
           readOnly: true
-        - mountPath: /tmp
-          name: tmp
         ports:
         - name: http-server
           containerPort: 8080
@@ -62,7 +48,7 @@ spec:
         - name: TOKEN_EXPIRY_SECONDS
           value: "3600"
         - name: PRIV_KEY_PATH
-          value: "/tmp/.ssh/privatekey"
+          value: "/root/.ssh/privatekey"
         # Valid levels are debug, info, warning, error, critical. If no valid level is set, gunicorn will default to info.
         - name: LOG_LEVEL
           value: "info"
@@ -80,11 +66,27 @@ spec:
           timeoutSeconds: 10
         resources:
           requests:
-            cpu: 200m
+            cpu: 100m
             memory: 64Mi
           limits:
             cpu: 500m
             memory: 256Mi
+      - name: cloudsql-proxy
+        resources:
+          limits:
+            cpu: "200m"
+            memory: "100Mi"
+        image: esraghu/gce-proxy:1.30.0
+        env:
+        - name: CONNECTION_NAME
+          valueFrom:
+            secretKeyRef:
+              name: cloud-sql-admin
+              key: connectionName
+        command: ["/cloud_sql_proxy",
+                  "-instances=$(CONNECTION_NAME)=tcp:5432"]
+        securityContext:
+          runAsNonRoot: true
       volumes:
       - name: keys
         secret:
@@ -94,11 +96,9 @@ spec:
             path: privatekey
           - key: jwtRS256.key.pub
             path: publickey
-      - emptyDir: {}
-        name: tmp
-# [END gke_boa_kubernetes_manifests_userservice_deployment_userservice]
+# [END gke_kubernetes_manifests_userservice_deployment_userservice]
 ---
-# [START gke_boa_kubernetes_manifests_userservice_service_userservice]
+# [START gke_kubernetes_manifests_userservice_service_userservice]
 apiVersion: v1
 kind: Service
 metadata:
@@ -111,4 +111,4 @@ spec:
   - name: http
     port: 8080
     targetPort: 8080
-# [END gke_boa_kubernetes_manifests_userservice_service_userservice]
+# [END gke_kubernetes_manifests_userservice_service_userservice]
