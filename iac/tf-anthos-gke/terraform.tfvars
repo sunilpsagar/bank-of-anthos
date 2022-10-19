@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+project_id   = "gke-validation"
 region       = "australia-southeast1"
+zones         = ["australia-southeast1-a", "australia-southeast1-b", "australia-southeast1-c"]
 cluster_name = "bank-of-anthos-sydney1"
 sync_repo    = "https://github.com/esraghu/bank-of-anthos.git"
 sync_branch  = "syd1"

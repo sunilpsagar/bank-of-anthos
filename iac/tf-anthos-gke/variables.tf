@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-variable "project" {
+variable "project_id" {
   type        = string
   description = "the GCP project where the cluster will be created"
 }
@@ -22,11 +22,6 @@ variable "project" {
 variable "region" {
   type        = string
   description = "the GCP region where the cluster will be created"
-}
-
-variable "zone" {
-  type        = string
-  description = "the GCP zone in the region where the cluster will be created"
 }
 
 variable "cluster_name" {

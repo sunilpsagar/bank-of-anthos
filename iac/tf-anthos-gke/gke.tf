@@ -15,22 +15,22 @@
  */
 
 module "gke" {
-  source                   = "terraform-google-modules/kubernetes-engine/google"
+  source                   = "terraform-google-modules/kubernetes-engine/google//modules/beta-autopilot-public-cluster"
   version                  = "~> 23.0"
-  project_id               = data.google_project.project.project_id
+  project_id               = var.project_id
   name                     = var.cluster_name
+  regional                 = true
   region                   = var.region
   network                  = "default"
   subnetwork               = "default"
   ip_range_pods            = ""
   ip_range_services        = ""
+  horizontal_pod_autoscaling = true
+  enable_vertical_pod_autoscaling = true
   cluster_resource_labels = {
     "mesh_id" : "proj-${data.google_project.project.number}",
   }
   identity_namespace = "${data.google_project.project.project_id}.svc.id.goog"
-
-  # Enabling Autopilot mode
-  enable_autopilot = true
 
   depends_on = [
     module.enabled_google_apis
