@@ -125,9 +125,9 @@ kind: Service
 metadata:
   name: frontend
   annotations:
-    cloud.google.com/load-balancer-type: "Internal"
+    cloud.google.com/neg: '{"ingress": true}'
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: frontend
   ports:
@@ -135,3 +135,19 @@ spec:
     port: 80
     targetPort: 8080
 # [END gke_kubernetes_manifests_frontend_service_frontend]
+# [START gke_kubernetes_manifests_frontend_ingress_frontend]
+# internal-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ilb-frontend-ingress
+  annotations:
+    kubernetes.io/ingress.class: "gce-internal"
+spec:
+  defaultBackend:
+    service:
+      name: frontend
+      port:
+        number: 80
+# [END gke_kubernetes_manifests_frontend_ingress_frontend]
+
