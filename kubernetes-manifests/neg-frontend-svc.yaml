@@ -4,7 +4,8 @@ kind: Service
 metadata:
   name: neg-frontend-svc
   annotations:
-    cloud.google.com/neg: '{"ingress": true}'
+    cloud.google.com/neg: '{"exposed_ports": {"80":{}}}'
+    anthos.cft.dev/autoneg: '{"name":"backend-service-for-frontend", "max_rate_per_endpoint":10}'
 spec:
   type: ClusterIP
   selector:
