@@ -26,7 +26,7 @@ metadata:
 spec:
   defaultBackend:
     service:
-      name: fneg-frontend-svc
+      name: neg-frontend-svc
       port:
         number: 80
 # [END gke_kubernetes_manifests_frontend_ingress_frontend]
