@@ -1,17 +1,16 @@
 # [START gke_kubernetes_manifests_frontend_service_frontend]
-apiVersion: v1
-kind: Service
+ # internal-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: neg-frontend-svc
+  name: ilb-frontend-ingress
+  namespace: default
   annotations:
-    cloud.google.com/neg: '{"exposed_ports": {"80":{}}}'
-    anthos.cft.dev/autoneg: '{"name":"backend-service-for-frontend", "max_rate_per_endpoint":10}'
+    kubernetes.io/ingress.class: "gce-internal"
 spec:
-  type: ClusterIP
-  selector:
-    app: frontend
-  ports:
-  - name: http
-    port: 80
-    targetPort: 8080
+  defaultBackend:
+    service:
+      name: neg-frontend-svc
+      port:
+        number: 80
 # [END gke_kubernetes_manifests_frontend_service_frontend]
