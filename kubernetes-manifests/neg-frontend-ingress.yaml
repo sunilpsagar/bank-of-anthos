@@ -1,0 +1,17 @@
+# [START gke_kubernetes_manifests_frontend_service_frontend]
+apiVersion: v1
+kind: Service
+metadata:
+  name: neg-frontend-svc
+  annotations:
+    cloud.google.com/neg: '{"exposed_ports": {"80":{}}}'
+    anthos.cft.dev/autoneg: '{"name":"backend-service-for-frontend", "max_rate_per_endpoint":10}'
+spec:
+  type: ClusterIP
+  selector:
+    app: frontend
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+# [END gke_kubernetes_manifests_frontend_service_frontend]
