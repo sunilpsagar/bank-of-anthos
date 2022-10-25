@@ -1,16 +1,16 @@
-# [START gke_kubernetes_manifests_frontend_service_frontend]
- # internal-ingress.yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+# [START gke_boa_kubernetes_manifests_frontend_service_frontend]
+apiVersion: v1
+kind: Service
 metadata:
-  name: ilb-frontend-ingress
-  namespace: default
+  name: frontend
   annotations:
-    kubernetes.io/ingress.class: "gce-internal"
+    cloud.google.com/load-balancer-type: "Internal"
 spec:
-  defaultBackend:
-    service:
-      name: neg-frontend-svc
-      port:
-        number: 80
-# [END gke_kubernetes_manifests_frontend_service_frontend]
+  type: LoadBalancer
+  selector:
+    app: frontend
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+# [END gke_boa_kubernetes_manifests_frontend_service_frontend]
