@@ -4,7 +4,7 @@ kind: Service
 metadata:
   name: neg-frontend-svc
   annotations:
-    cloud.google.com/neg: '{"exposed_ports": {"80":{}}}'
+    cloud.google.com/neg: '{"exposed_ports": {"8080":{}}}'
     anthos.cft.dev/autoneg: '{"name":"backend-service-for-frontend", "max_rate_per_endpoint":10}'
 spec:
   type: NodePort
@@ -12,7 +12,7 @@ spec:
     app: frontend
   ports:
   - name: http
-    port: 80
+    port: 8080
     targetPort: 8080
 # [END gke_kubernetes_manifests_frontend_service_frontend]
 
