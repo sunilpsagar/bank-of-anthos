@@ -16,7 +16,7 @@
 
 project_id   = "gke-validation"
 region       = "australia-southeast2"
-cluster_name = "bank-of-anthos-sydney1"
+cluster_name = "bank-of-anthos-melbourne1"
 sync_repo    = "https://github.com/esraghu/bank-of-anthos.git"
 sync_branch  = "mel1"
 sync_rev     = ""
