@@ -15,9 +15,9 @@
  */
 
 project_id   = "gke-validation"
-region       = "australia-southeast1"
-cluster_name = "bank-of-anthos-sydney2"
+region       = "australia-southeast2"
+cluster_name = "bank-of-anthos-sydney1"
 sync_repo    = "https://github.com/esraghu/bank-of-anthos.git"
-sync_branch  = "syd2"
+sync_branch  = "mel1"
 sync_rev     = ""
 policy_dir   = "/kubernetes-manifests"
