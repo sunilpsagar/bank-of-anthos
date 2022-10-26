@@ -27,6 +27,7 @@ spec:
         app: frontend
     spec:
       serviceAccountName: default
+      replicas: 3
       terminationGracePeriodSeconds: 5
       securityContext:
         fsGroup: 1000
