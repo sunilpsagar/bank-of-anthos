@@ -30,7 +30,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: contacts
-        image: gcr.io/bank-of-anthos-ci/contacts:v0.5.8
+        image: esraghu-ci/contacts:v0.5.8
         volumeMounts:
         - name: publickey
           mountPath: "/root/.ssh"
@@ -70,7 +70,7 @@ spec:
           limits:
             cpu: "200m"
             memory: "100Mi"
-        image: gcr.io/cloudsql-docker/gce-proxy:1.30.0
+        image: esraghu/gce-proxy:1.30.0
         env:
         - name: CONNECTION_NAME
           valueFrom:
