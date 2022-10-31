@@ -30,7 +30,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: userservice
-        image: esraghu-ci/userservice:v0.5.8
+        image: esraghu/userservice:v0.5.8
         volumeMounts:
         - name: keys
           mountPath: "/root/.ssh"
