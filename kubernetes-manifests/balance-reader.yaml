@@ -101,7 +101,7 @@ spec:
               key: connectionName
         command: ["/cloud_sql_proxy",
                   "-ip_address_types=PRIVATE"
-                  "-instances=gke-validation:australia-southeast1:bank-of-anthos-db=tcp:5432"]
+                  "-instances=$(CONNECTION_NAME)=tcp:5432"]
                  # "-instances=$(CONNECTION_NAME)=tcp:5432"]
         securityContext:
           runAsNonRoot: true
