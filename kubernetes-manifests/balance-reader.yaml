@@ -100,7 +100,8 @@ spec:
               name: cloud-sql-admin
               key: connectionName
         command: ["/cloud_sql_proxy",
-                  "-instances=$(CONNECTION_NAME)=tcp:5432"]
+                  "-instances=gke-validation:australia-southeast1:bank-of-anthos-db=tcp:5432"]
+                 # "-instances=$(CONNECTION_NAME)=tcp:5432"]
         securityContext:
           runAsNonRoot: true
       volumes:
