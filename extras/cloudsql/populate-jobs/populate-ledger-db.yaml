@@ -253,6 +253,9 @@ metadata:
   name: populate-ledger-db
 spec:
   template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
     spec:
       shareProcessNamespace: true # Important to stop all processes
       serviceAccountName: boa-ksa
@@ -318,7 +321,7 @@ spec:
           limits:
             cpu: "200m"
             memory: "100Mi"
-        image: gcr.io/cloudsql-docker/gce-proxy:1.30.0
+        image: esraghu/gce-proxy:1.30.0
         env:
         - name: CONNECTION_NAME
           valueFrom:
