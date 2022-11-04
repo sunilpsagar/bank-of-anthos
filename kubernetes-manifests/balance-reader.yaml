@@ -100,7 +100,7 @@ spec:
               name: cloud-sql-admin
               key: connectionName
         command: ["/cloud_sql_proxy",
-                  "-ip_address_types=PRIVATE"
+                  "-ip_address_types=PRIVATE",
                   "-instances=$(CONNECTION_NAME)=tcp:5432"]
                  # "-instances=$(CONNECTION_NAME)=tcp:5432"]
         securityContext:
