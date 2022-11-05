@@ -155,7 +155,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: neg-frontend-svc
+  name: neg-svc-new
   annotations:
     cloud.google.com/neg: '{"exposed_ports": {"80":{"name": "neg-boa"}}}'
 spec:
