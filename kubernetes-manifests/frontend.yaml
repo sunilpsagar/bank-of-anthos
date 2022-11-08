@@ -42,7 +42,7 @@ spec:
               - all
           privileged: false
           readOnlyRootFilesystem: true
-        image: esraghu/frontend:v0.5.8
+        image: esraghu/frontend:v0.5.8.fail
         volumeMounts:
         - name: publickey
           mountPath: "/tmp/.ssh"
