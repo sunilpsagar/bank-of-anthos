@@ -135,3 +135,21 @@ spec:
     port: 80
     targetPort: 8080
 # [END gke_kubernetes_manifests_frontend_service_frontend]
+---
+# [START gke_boa_kubernetes_manifests_frontend_service_frontend]
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-neg-ilb-global
+  annotations:
+    cloud.google.com/load-balancer-type: "Internal"
+    networking.gke.io/internal-load-balancer-allow-global-access: "true"
+spec:
+  type: LoadBalancer
+  selector:
+    app: frontend
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+# [END gke_boa_kubernetes_manifests_frontend_service_frontend]
