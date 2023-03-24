@@ -28,6 +28,9 @@ terraform {
     kubernetes = {
       source = "hashicorp/kubernetes"
     }
+    argocd = {
+      source = "argoproj/argocd"
+    }
   }
 }
 provider "google-beta" {
